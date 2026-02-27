@@ -45,10 +45,10 @@ async def on_ready():
                                                   "JLCPCB/easyEDA library")
 @app_commands.describe(parts="JLCPCB part numbers, separated by whitespace")
 async def jlc2kicad(ctx, *, parts: str):
-    await ctx.send("one sec")
+    await ctx.send("Generating KiCad component library...")
     out_dir = Path("temp/output")
     if not jlc_to_kicad(list(parts.split()), out_dir) or not out_dir.exists():
-        await ctx.send("that's not a part number")
+        await ctx.send("Failed to create component library, your part number is likely wrong.")
         return
 
     zip_path = Path("temp/kicad_lib.zip")
@@ -57,7 +57,7 @@ async def jlc2kicad(ctx, *, parts: str):
     shutil.make_archive(str(zip_path.with_suffix("")), 'zip', out_dir)
 
     result_file = discord.File(zip_path)
-    await ctx.send("here", file=result_file)
+    await ctx.send("Success! Result attached.", file=result_file)
 
 
 @jlc2kicad.error
