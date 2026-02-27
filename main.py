@@ -64,7 +64,8 @@ async def jlc2kicad(ctx, *, parts: str):
 @jlc2kicad.error
 async def jlc2kicad_error(ctx, error):
     await ctx.send("ERROR")
-    await _get_log_channel().send(str(error))
+    log_channel = await _get_log_channel()
+    await log_channel.send(str(error))
     raise error
 
 
