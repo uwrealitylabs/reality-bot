@@ -49,12 +49,12 @@ async def on_ready():
 @app_commands.describe(parts="JLCPCB part numbers, separated by whitespace")
 async def jlc2kicad(ctx, *, parts: str):
     await ctx.send("Generating KiCad component library...")
-    out_dir = Path("output")
+    out_dir = Path("temp/output")
     if not jlc_to_kicad(list(parts.split()), out_dir) or not out_dir.exists():
         await ctx.send("Failed to create component library, your part number is likely wrong.")
         return
 
-    zip_path = Path("kicad_lib.zip")
+    zip_path = Path("temp/kicad_lib.zip")
     if zip_path.exists():
         zip_path.unlink()
     shutil.make_archive(zip_path.stem, 'zip', out_dir)
