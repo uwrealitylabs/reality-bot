@@ -14,11 +14,16 @@ bot = commands.Bot(intents=intents, command_prefix='$')
 active_commands = set()
 
 UWRL_GUILD_ID: int = 1181690091853328455
+LOG_CHANNEL_ID: int = 1417347796628934707
 
 
 def _get_token():
     with open(Path("secret/token.txt"), 'r') as f:
         return f.read().strip()
+
+
+async def _get_log_channel():
+    return await bot.fetch_channel(LOG_CHANNEL_ID)
 
 
 @bot.event
@@ -27,7 +32,6 @@ async def on_ready():
     guild = discord.Object(id=UWRL_GUILD_ID)
     bot.tree.copy_global_to(guild=guild)
     await bot.tree.sync(guild=guild)
-
 
 
 # @client.event
@@ -60,6 +64,7 @@ async def jlc2kicad(ctx, *, parts: str):
 @jlc2kicad.error
 async def jlc2kicad_error(ctx, error):
     await ctx.send("ERROR")
+    await _get_log_channel().send(str(error))
     raise error
 
 
