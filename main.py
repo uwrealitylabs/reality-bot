@@ -1,9 +1,6 @@
-import shutil
-
 import discord
 from discord import app_commands
 from discord.ext import commands
-from pathlib import Path
 
 from modules.jlc2kicad_wrapper import *
 
@@ -57,7 +54,7 @@ async def jlc2kicad(ctx, *, parts: str):
     zip_path = Path("temp/kicad_lib.zip")
     if zip_path.exists():
         zip_path.unlink()
-    shutil.make_archive(zip_path.stem, 'zip', out_dir)
+    shutil.make_archive(str(zip_path.with_suffix("")), 'zip', out_dir)
 
     result_file = discord.File(zip_path)
     await ctx.send("Success! Component library is attached.", file=result_file)

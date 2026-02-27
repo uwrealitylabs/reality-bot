@@ -1,11 +1,13 @@
 import argparse
 import subprocess
 import shutil
-import zipfile
-from enum import Enum
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
+
+
+JLC2KICAD_PATH = Path(sys.executable).parent / "JLC2KiCad_Lib.exe"
 
 
 @dataclass
@@ -48,13 +50,18 @@ class JLC2KiCadArguments:
     """Set if you want logs to be written in a file."""
 
 
+def _get_jlc2kicad_exe() -> Path:
+    """Retrieves the path to the JLC2KiCadLib executable"""
+    return next(f for f in Path(sys.executable).parent.iterdir() if f.name.startswith("JLC2KiCadLib"))
+
+
 def _run_jlc2kicad_cmd(args: JLC2KiCadArguments) -> bool:
     """
     Runs JLC2KiCadLib with given arguments
 
     :returns: Whether JLC2KiCadLib ran without error
     """
-    subprocess_args: list = ["JLC2KiCadLib"]
+    subprocess_args: list = [_get_jlc2kicad_exe()]
     subprocess_args.extend(args.JLCPCB_parts)
     if args.dir:
         subprocess_args.extend(["-dir", args.dir])
