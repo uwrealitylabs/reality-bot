@@ -45,12 +45,14 @@ async def on_ready():
 
 
 @bot.hybrid_command(name="jlc2kicad", description="Generate a component library for KiCad from the "
-                                                       "JLCPCB/easyEDA library")
+                                                  "JLCPCB/easyEDA library")
 @app_commands.describe(parts="JLCPCB part numbers, separated by whitespace")
 async def jlc2kicad(ctx, *, parts: str):
-    print("received")
+    await ctx.send("Generating KiCad component library...")
     out_dir = Path("output")
-    jlc_to_kicad(list(parts.split()), out_dir)
+    if not jlc_to_kicad(list(parts.split()), out_dir) or not out_dir.exists():
+        await ctx.send("Failed to create component library, your part number is likely wrong.")
+        return
 
     zip_path = Path("kicad_lib.zip")
     if zip_path.exists():
@@ -58,15 +60,19 @@ async def jlc2kicad(ctx, *, parts: str):
     shutil.make_archive(zip_path.stem, 'zip', out_dir)
 
     result_file = discord.File(zip_path)
-    await ctx.send(file=result_file)
+    await ctx.send("Success! Component library is attached.", file=result_file)
 
 
 @jlc2kicad.error
 async def jlc2kicad_error(ctx, error):
-    await ctx.send("ERROR")
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"Usage: `$jlc2kicad part1 [part2 part3 ...]`")
+        return
+    await ctx.send(f"Unexpected error encountered. Details printed to <#{LOG_CHANNEL_ID}>")
     log_channel = await _get_log_channel()
-    await log_channel.send(str(error))
+    await log_channel.send(f"`{str(error)}`")
     raise error
 
 
-bot.run(_get_token())
+if __name__ == "__main__":
+    bot.run(_get_token())

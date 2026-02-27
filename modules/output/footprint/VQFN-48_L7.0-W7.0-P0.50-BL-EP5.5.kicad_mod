@@ -1,4 +1,4 @@
-(module "VQFN-48_L7.0-W7.0-P0.50-BL-EP5.5" (layer F.Cu) (tedit 699FED82)
+(module "VQFN-48_L7.0-W7.0-P0.50-BL-EP5.5" (layer F.Cu) (tedit 69A11AE4)
   (descr "VQFN-48_L7.0-W7.0-P0.50-BL-EP5.5 footprint")
   (tags "VQFN-48_L7.0-W7.0-P0.50-BL-EP5.5 footprint C1337258")
   (attr smd)

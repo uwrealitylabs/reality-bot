@@ -60,15 +60,19 @@ def _run_jlc2kicad_cmd(args: JLC2KiCadArguments) -> bool:
         subprocess_args.extend(["-dir", args.dir])
     # TODO: use other arguments
 
-    subprocess.run(subprocess_args, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return not subprocess.CalledProcessError
+    result = subprocess.run(subprocess_args, check=True, capture_output=True)
+    return result.returncode == 0
 
 
-def jlc_to_kicad(parts: list[str], output_dir: Path) -> None:
-    """Generates a component library for the given part numbers, writes them to the given output directory"""
+def jlc_to_kicad(parts: list[str], output_dir: Path) -> bool:
+    """
+    Generates a component library for the given part numbers, writes them to the given output directory
+
+    :returns: Whether component library was successfully generated
+    """
     if output_dir.exists():
         shutil.rmtree(output_dir)
-    _run_jlc2kicad_cmd(JLC2KiCadArguments(
+    return _run_jlc2kicad_cmd(JLC2KiCadArguments(
         JLCPCB_parts=parts,
         dir=output_dir
     ))
@@ -83,8 +87,9 @@ def _main() -> None:
         JLCPCB_parts=["C1337258"],
         dir=args.dir if args.dir else Path("output")
     )
-    _run_jlc2kicad_cmd(j2k_args)
+    print(_run_jlc2kicad_cmd(j2k_args))
 
 
 if __name__ == "__main__":
     _main()
+
