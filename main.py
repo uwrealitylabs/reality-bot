@@ -63,7 +63,7 @@ async def jlc2kicad(ctx, *, parts: str):
 @jlc2kicad.error
 async def jlc2kicad_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f"like this: `$jlc2kicad part1 [part2 part3 ...]`")
+        await ctx.send(f"Usage: `$jlc2kicad part1 [part2 part3 ...]`")
         return
     await ctx.send(f"Unexpected error encountered. Details printed to <#{LOG_CHANNEL_ID}>")
     log_channel = await _get_log_channel()
